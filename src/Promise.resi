@@ -8,12 +8,6 @@
 // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:variance:abstract-data-types
 type t<+'a> = Js.Promise.t<'a>
 
-type _allSettledValue<'a, 'b> = {
-  status: [#fulfilled | #rejected],
-  value: option<'a>,
-  reason: option<'b>,
-}
-
 type allSettledValue<'a, 'b> = Fulfilled('a) | Rejected('b)
 
 // JsError is currently a shim exception and will be deprecated for
@@ -242,9 +236,5 @@ external all5: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>)) => t<('a, 'b, 'c, 'd, 'e)> 
 @bs.scope("Promise")
 @bs.val
 external all6: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>, t<'f>)) => t<('a, 'b, 'c, 'd, 'e, 'f)> = "all"
-
-@bs.scope("Promise")
-@bs.val
-external _allSettled: array<t<'a>> => t<array<_allSettledValue<'a, 'b>>> = "allSettled"
 
 let allSettled: (array<t<'a>>) => t<array<allSettledValue<'a, 'b>>>
