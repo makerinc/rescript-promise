@@ -455,6 +455,36 @@ module Concurrently = {
     })
   }
 
+  let testAllSettled = () => {
+    open Promise
+
+    let place = ref(0)
+
+    let delayedMsg = (ms, msg, shouldResolve) => {
+      Promise.make((resolve, reject) => {
+        Js.Global.setTimeout(() => {
+          place := place.contents + 1
+          shouldResolve
+          ? resolve(.(place.contents, msg))
+          : reject(. TestError("oops"))
+        }, ms)->ignore
+      })
+    }
+
+    let p1 = delayedMsg(1000, "is Anna", true)
+    let p2 = delayedMsg(500, "myName", false)
+    let p3 = delayedMsg(100, "Hi", true)
+
+    allSettled([p1, p2, p3])->then(arr => {
+      let exp = [{ Fulfilled((3, "is Anna")) }, { Rejected(TestError("oops")) }, {Fulfilled((1, "Hi"))}]
+      Js.log2("got arr settled: ", arr)
+      Js.log2("got exp: ", exp)
+      Js.log2("is ok ? ", arr == exp)
+      Test.run(__POS_OF__("Should have correct placing"), arr, equal, exp)
+      resolve()
+    })
+  }
+
   let runTests = () => {
     testParallel()->ignore
     testRace()->ignore
@@ -463,6 +493,7 @@ module Concurrently = {
     testParallel4()->ignore
     testParallel5()->ignore
     testParallel6()->ignore
+    testAllSettled()->ignore
   }
 }
 

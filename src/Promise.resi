@@ -8,6 +8,14 @@
 // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:variance:abstract-data-types
 type t<+'a> = Js.Promise.t<'a>
 
+type _allSettledValue<'a, 'b> = {
+  status: [#fulfilled | #rejected],
+  value: option<'a>,
+  reason: option<'b>,
+}
+
+type allSettledValue<'a, 'b> = Fulfilled('a) | Rejected('b)
+
 // JsError is currently a shim exception and will be deprecated for
 // ReScript version >= 9.0.
 //
@@ -99,7 +107,7 @@ In case you want to return another promise in your `callback`, consider using \`
 let catch: (t<'a>, exn => t<'a>) => t<'a>
 
 @ocaml.doc("
-`then(promise, callback)` returns a new promise based on the result of `promise`'s value. 
+`then(promise, callback)` returns a new promise based on the result of `promise`'s value.
 The `callback` needs to explicitly return a new promise via `resolve`.
 
 It is **not allowed** to resolve a nested promise (like `resolve(resolve(1))`).
@@ -120,7 +128,7 @@ Promise.resolve(5)
 external then: (t<'a>, @uncurry ('a => t<'b>)) => t<'b> = "then"
 
 @ocaml.doc("
-`thenResolve(promise, callback)` converts an encapsulated value of a promise into another promise wrapped value. 
+`thenResolve(promise, callback)` converts an encapsulated value of a promise into another promise wrapped value.
 
 It is **not allowed** to return a promise within the provided callback (e.g. `thenResolve(value => resolve(value))`).
 
@@ -234,3 +242,9 @@ external all5: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>)) => t<('a, 'b, 'c, 'd, 'e)> 
 @bs.scope("Promise")
 @bs.val
 external all6: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>, t<'f>)) => t<('a, 'b, 'c, 'd, 'e, 'f)> = "all"
+
+@bs.scope("Promise")
+@bs.val
+external _allSettled: array<t<'a>> => t<array<_allSettledValue<'a, 'b>>> = "allSettled"
+
+let allSettled: (array<t<'a>>) => t<array<allSettledValue<'a, 'b>>>

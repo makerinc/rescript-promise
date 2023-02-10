@@ -1,5 +1,13 @@
 type t<+'a> = Js.Promise.t<'a>
 
+type _allSettledValue<'a, 'b> = {
+  status: [#fulfilled | #rejected],
+  value: option<'a>,
+  reason: option<'b>,
+}
+
+type allSettledValue<'a, 'b> = Fulfilled('a) | Rejected('b)
+
 exception JsError(Js.Exn.t)
 external unsafeToJsExn: exn => Js.Exn.t = "%identity"
 
@@ -57,3 +65,11 @@ let catch = (promise, callback) => {
 
 @bs.scope("Promise") @bs.val
 external race: array<t<'a>> => t<'a> = "race"
+
+@bs.scope("Promise") @bs.val
+external _allSettled: array<t<'a>> => t<array<_allSettledValue<'a, 'b>>> = "allSettled"
+
+let allSettled = (arr) => arr->_allSettled->thenResolve((values) => values->Js.Array2.map(val => switch val.status {
+| #fulfilled => Fulfilled(val.value->Belt.Option.getUnsafe)
+| #rejected => Rejected(val.reason->Belt.Option.getUnsafe)
+}))

@@ -15,6 +15,26 @@ function $$catch(promise, callback) {
             });
 }
 
+function allSettled(arr) {
+  return Promise.allSettled(arr).then(function (values) {
+              return values.map(function (val) {
+                          var match = val.status;
+                          if (match === "rejected") {
+                            return {
+                                    TAG: /* Rejected */1,
+                                    _0: val.reason
+                                  };
+                          } else {
+                            return {
+                                    TAG: /* Fulfilled */0,
+                                    _0: val.value
+                                  };
+                          }
+                        });
+            });
+}
+
 exports.JsError = JsError;
 exports.$$catch = $$catch;
+exports.allSettled = allSettled;
 /* No side effect */

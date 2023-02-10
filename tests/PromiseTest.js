@@ -717,6 +717,76 @@ function testParallel6(param) {
             });
 }
 
+function testAllSettled(param) {
+  var place = {
+    contents: 0
+  };
+  var delayedMsg = function (ms, msg, shouldResolve) {
+    return new Promise((function (resolve, reject) {
+                  setTimeout((function (param) {
+                          place.contents = place.contents + 1 | 0;
+                          if (shouldResolve) {
+                            return resolve([
+                                        place.contents,
+                                        msg
+                                      ]);
+                          } else {
+                            return reject({
+                                        RE_EXN_ID: TestError,
+                                        _1: "oops"
+                                      });
+                          }
+                        }), ms);
+                  
+                }));
+  };
+  var p1 = delayedMsg(1000, "is Anna", true);
+  var p2 = delayedMsg(500, "myName", false);
+  var p3 = delayedMsg(100, "Hi", true);
+  return $$Promise.allSettled([
+                p1,
+                p2,
+                p3
+              ]).then(function (arr) {
+              var exp = [
+                {
+                  TAG: /* Fulfilled */0,
+                  _0: [
+                    3,
+                    "is Anna"
+                  ]
+                },
+                {
+                  TAG: /* Rejected */1,
+                  _0: {
+                    RE_EXN_ID: TestError,
+                    _1: "oops"
+                  }
+                },
+                {
+                  TAG: /* Fulfilled */0,
+                  _0: [
+                    1,
+                    "Hi"
+                  ]
+                }
+              ];
+              console.log("got arr settled: ", arr);
+              console.log("got exp: ", exp);
+              console.log("is ok ? ", Caml_obj.caml_equal(arr, exp));
+              Test.run([
+                    [
+                      "PromiseTest.res",
+                      483,
+                      26,
+                      55
+                    ],
+                    "Should have correct placing"
+                  ], arr, equal, exp);
+              return Promise.resolve(undefined);
+            });
+}
+
 function runTests$4(param) {
   testParallel(undefined);
   testRace(undefined);
@@ -725,6 +795,7 @@ function runTests$4(param) {
   testParallel4(undefined);
   testParallel5(undefined);
   testParallel6(undefined);
+  testAllSettled(undefined);
   
 }
 
@@ -736,6 +807,7 @@ var Concurrently = {
   testParallel4: testParallel4,
   testParallel5: testParallel5,
   testParallel6: testParallel6,
+  testAllSettled: testAllSettled,
   runTests: runTests$4
 };
 
