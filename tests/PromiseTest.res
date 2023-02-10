@@ -290,7 +290,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -334,7 +334,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -358,7 +358,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -383,7 +383,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -409,7 +409,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -436,7 +436,7 @@ module Concurrently = {
       Promise.make((resolve, _) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          resolve(.(place.contents, msg))
+          resolve(. (place.contents, msg))
         }, ms)->ignore
       })
     }
@@ -464,9 +464,7 @@ module Concurrently = {
       Promise.make((resolve, reject) => {
         Js.Global.setTimeout(() => {
           place := place.contents + 1
-          shouldResolve
-          ? resolve(.(place.contents, msg))
-          : reject(. TestError("oops"))
+          shouldResolve ? resolve(. (place.contents, msg)) : reject(. TestError("oops"))
         }, ms)->ignore
       })
     }
@@ -476,7 +474,7 @@ module Concurrently = {
     let p3 = delayedMsg(100, "Hi", true)
 
     allSettled([p1, p2, p3])->then(arr => {
-      let exp = [{ Fulfilled((3, "is Anna")) }, { Rejected(TestError("oops")) }, {Fulfilled((1, "Hi"))}]
+      let exp = [{Fulfilled((3, "is Anna"))}, {Rejected(TestError("oops"))}, {Fulfilled((1, "Hi"))}]
       Js.log2("got arr settled: ", arr)
       Js.log2("got exp: ", exp)
       Js.log2("is ok ? ", arr == exp)

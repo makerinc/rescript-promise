@@ -11,42 +11,42 @@ type allSettledValue<'a, 'b> = Fulfilled('a) | Rejected('b)
 exception JsError(Js.Exn.t)
 external unsafeToJsExn: exn => Js.Exn.t = "%identity"
 
-@bs.new
-external make: ((@bs.uncurry (. 'a) => unit, (. 'e) => unit) => unit) => t<'a> = "Promise"
+@new
+external make: ((@uncurry (. 'a) => unit, (. 'e) => unit) => unit) => t<'a> = "Promise"
 
-@bs.val @bs.scope("Promise")
+@val @scope("Promise")
 external resolve: 'a => t<'a> = "resolve"
 
-@bs.send external then: (t<'a>, @uncurry ('a => t<'b>)) => t<'b> = "then"
+@send external then: (t<'a>, @uncurry ('a => t<'b>)) => t<'b> = "then"
 
-@bs.send
+@send
 external thenResolve: (t<'a>, @uncurry ('a => 'b)) => t<'b> = "then"
 
-@bs.send external finally: (t<'a>, unit => unit) => t<'a> = "finally"
+@send external finally: (t<'a>, unit => unit) => t<'a> = "finally"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external reject: exn => t<_> = "reject"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all: array<t<'a>> => t<array<'a>> = "all"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all2: ((t<'a>, t<'b>)) => t<('a, 'b)> = "all"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all3: ((t<'a>, t<'b>, t<'c>)) => t<('a, 'b, 'c)> = "all"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all4: ((t<'a>, t<'b>, t<'c>, t<'d>)) => t<('a, 'b, 'c, 'd)> = "all"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all5: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>)) => t<('a, 'b, 'c, 'd, 'e)> = "all"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external all6: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>, t<'f>)) => t<('a, 'b, 'c, 'd, 'e, 'f)> = "all"
 
-@bs.send
-external _catch: (t<'a>, @bs.uncurry (exn => t<'a>)) => t<'a> = "catch"
+@send
+external _catch: (t<'a>, @uncurry (exn => t<'a>)) => t<'a> = "catch"
 
 let catch = (promise, callback) => {
   _catch(promise, err => {
@@ -63,13 +63,20 @@ let catch = (promise, callback) => {
   })
 }
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external race: array<t<'a>> => t<'a> = "race"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external _allSettled: array<t<'a>> => t<array<_allSettledValue<'a, 'b>>> = "allSettled"
 
-let allSettled = (arr) => arr->_allSettled->thenResolve((values) => values->Js.Array2.map(val => switch val.status {
-| #fulfilled => Fulfilled(val.value->Belt.Option.getUnsafe)
-| #rejected => Rejected(val.reason->Belt.Option.getUnsafe)
-}))
+let allSettled = arr =>
+  arr
+  ->_allSettled
+  ->thenResolve(values =>
+    values->Js.Array2.map(val =>
+      switch val.status {
+      | #fulfilled => Fulfilled(val.value->Belt.Option.getUnsafe)
+      | #rejected => Rejected(val.reason->Belt.Option.getUnsafe)
+      }
+    )
+  )

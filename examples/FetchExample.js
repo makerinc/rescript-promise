@@ -2,9 +2,9 @@
 'use strict';
 
 var $$Promise = require("../src/Promise.js");
-var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Array = require("rescript/lib/js/belt_Array.js");
 var NodeFetch = require("node-fetch");
-var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
+var Caml_exceptions = require("rescript/lib/js/caml_exceptions.js");
 
 globalThis.fetch = NodeFetch;
 
@@ -96,7 +96,7 @@ var Product = {
   getProducts: getProducts
 };
 
-var FailedRequest = Caml_exceptions.create("FetchExample.FailedRequest");
+var FailedRequest = /* @__PURE__ */Caml_exceptions.create("FetchExample.FailedRequest");
 
 $$Promise.$$catch(login("emma.wong@reqres.in", "pw").then(function (ret) {
             if (ret.TAG !== /* Ok */0) {

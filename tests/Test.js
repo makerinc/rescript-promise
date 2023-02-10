@@ -3,7 +3,7 @@
 
 var Fs = require("fs");
 var Path = require("path");
-var Curry = require("bs-platform/lib/js/curry.js");
+var Curry = require("rescript/lib/js/curry.js");
 var CodeFrame = require("@babel/code-frame");
 
 var dirname = typeof __dirname === "undefined" ? undefined : __dirname;

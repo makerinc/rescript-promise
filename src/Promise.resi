@@ -24,11 +24,11 @@ exception JsError(Js.Exn.t)
 let p = Promise.resolve(5) // Promise.t<int>
 ```
 ")
-@bs.val
-@bs.scope("Promise")
+@val
+@scope("Promise")
 external resolve: 'a => t<'a> = "resolve"
 
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external reject: exn => t<_> = "reject"
 
 @ocaml.doc("
@@ -57,8 +57,8 @@ Promise.make((resolve, reject) => {
 ->ignore
 ```
 ")
-@bs.new
-external make: ((@bs.uncurry (. 'a) => unit, (. 'e) => unit) => unit) => t<'a> = "Promise"
+@new
+external make: ((@uncurry (. 'a) => unit, (. 'e) => unit) => unit) => t<'a> = "Promise"
 
 @ocaml.doc("
 `catch(promise, errorCallback)` registers an exception handler in a promise chain.
@@ -118,7 +118,7 @@ Promise.resolve(5)
 ->ignore
 ```
 ")
-@bs.send
+@send
 external then: (t<'a>, @uncurry ('a => t<'b>)) => t<'b> = "then"
 
 @ocaml.doc("
@@ -139,7 +139,7 @@ resolve(\"Anna\")
 
 In case you want to return another promise in your `callback`, consider using \`then\` instead.
 ")
-@bs.send
+@send
 external thenResolve: (t<'a>, @uncurry ('a => 'b)) => t<'b> = "then"
 
 @ocaml.doc("
@@ -173,11 +173,11 @@ resolve(5)
 ->ignore
 ```
 ")
-@bs.send
+@send
 external finally: (t<'a>, unit => unit) => t<'a> = "finally"
 
 /* Combining promises. */
-@bs.scope("Promise") @bs.val
+@scope("Promise") @val
 external race: array<t<'a>> => t<'a> = "race"
 
 @ocaml.doc("
@@ -198,43 +198,43 @@ all(promises)
 ->ignore
 ```
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all: array<t<'a>> => t<array<'a>> = "all"
 
 @ocaml.doc("
 [all2((p1, p2))]. Like `all()`, but with a fixed size tuple of 2
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all2: ((t<'a>, t<'b>)) => t<('a, 'b)> = "all"
 
 @ocaml.doc("
 [all3((p1, p2, p3))]. Like `all()`, but with a fixed size tuple of 3
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all3: ((t<'a>, t<'b>, t<'c>)) => t<('a, 'b, 'c)> = "all"
 
 @ocaml.doc("
 [all4((p1, p2, p3, p4))]. Like `all()`, but with a fixed size tuple of 4
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all4: ((t<'a>, t<'b>, t<'c>, t<'d>)) => t<('a, 'b, 'c, 'd)> = "all"
 
 @ocaml.doc("
 [all5((p1, p2, p3, p4, p5))]. Like `all()`, but with a fixed size tuple of 5
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all5: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>)) => t<('a, 'b, 'c, 'd, 'e)> = "all"
 
 @ocaml.doc("
 [all6((p1, p2, p4, p5, p6))]. Like `all()`, but with a fixed size tuple of 6
 ")
-@bs.scope("Promise")
-@bs.val
+@scope("Promise")
+@val
 external all6: ((t<'a>, t<'b>, t<'c>, t<'d>, t<'e>, t<'f>)) => t<('a, 'b, 'c, 'd, 'e, 'f)> = "all"
 
-let allSettled: (array<t<'a>>) => t<array<allSettledValue<'a, 'b>>>
+let allSettled: array<t<'a>> => t<array<allSettledValue<'a, 'b>>>

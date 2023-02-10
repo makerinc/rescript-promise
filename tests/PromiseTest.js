@@ -2,13 +2,13 @@
 'use strict';
 
 var Test = require("./Test.js");
-var Curry = require("bs-platform/lib/js/curry.js");
-var Js_exn = require("bs-platform/lib/js/js_exn.js");
+var Curry = require("rescript/lib/js/curry.js");
+var Js_exn = require("rescript/lib/js/js_exn.js");
 var $$Promise = require("../src/Promise.js");
-var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
-var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
+var Caml_obj = require("rescript/lib/js/caml_obj.js");
+var Caml_exceptions = require("rescript/lib/js/caml_exceptions.js");
 
-var TestError = Caml_exceptions.create("PromiseTest.TestError");
+var TestError = /* @__PURE__ */Caml_exceptions.create("PromiseTest.TestError");
 
 var fail = Js_exn.raiseError;
 
@@ -777,7 +777,7 @@ function testAllSettled(param) {
               Test.run([
                     [
                       "PromiseTest.res",
-                      483,
+                      481,
                       26,
                       55
                     ],
